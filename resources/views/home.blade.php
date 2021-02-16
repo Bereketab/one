@@ -19,41 +19,42 @@
     <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/master.css')}}" rel="stylesheet">
     <link href="{{asset('assets/vendor/flagiconcss/css/flag-icon.min.css')}}" rel="stylesheet">
+    <script type="text/javascript" src="{{asset('js/jquery.js')}}"></script>
+	<script type="text/javascript" src="{{asset('js/plugins.js')}}"></script>
       {{-- <script src="{{asset('ckeditor/ckeditor.js')}}"></script> --}}
 </head>
 
 <body>
     <div class="wrapper">
-        <nav id="sidebar" class="active">
-            <div class="sidebar-header">
-                <img src="assets/img/bootstraper-logo.png" alt="bootraper logo" class="app-logo">
-            </div>
-            <ul class="list-unstyled components text-secondary">
-                <li>
-                    <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
-                </li>
-                
-               
-                <li>
-                    <a href="#uielementsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-layer-group"></i> Add News and Event</a>
-                    <ul class="collapse list-unstyled" id="uielementsmenu">
-                        <li>
-                            <a href="{{route ('news_get')}}" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-angle-right"></i>Add</a>
-                        </li>
-                        <li>
-                            <a href="ui-badges.html"><i class="fas fa-angle-right"></i>Mange</a>
-                        </li>
-                    </ul>
-                </li>
-               
-            </ul>
-        </nav>
+       
+        <script>
+            $("#manage").click(function(e) {
+                       e.preventDefault();
+
+                       $.ajax({
+                                                  type:'get',
+                                                  url:'{{ route('news_list') }}',
+                                                  processData: false,
+                                                  contentType: false,
+                                                  dataType:'json',
+                                                  success: function (data) {
+                                                    var popup = '<div class="modal fade" id="notes-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;"><div class="modal-dialog"><div class="notes-modal-container"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h1></h1><h3>Recipe Flavours</h3><br>' + data + '</div></div></div>';
+                                                      $('#replace').html('popup')
+                                                      
+                                                 console.log(data);
+                                                       },
+                                                  error:function(data){
+                                                   
+                                                   
+                                                  },
+                                                      });
+                                                   });
+       </script>
         <div id="body" class="active">
             <nav class="navbar navbar-expand-lg navbar-white bg-white">
-                <button type="button" id="sidebarCollapse" class="btn btn-light"><i class="fas fa-bars"></i><span></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                   
                     <ul class="nav navbar-nav ml-auto">
-                       
                         <li class="nav-item dropdown">
                             <div class="nav-dropdown">
                                 <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>John Doe</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
@@ -69,9 +70,40 @@
                     </ul>
                 </div>
             </nav>
-        
+            <div id='replace'>
+                <table id="table" class="table">
+                
+
+  <thead class="thead-dark">
+    <button class='btn btn-app' href="" data-toggle="modal" data-target="#exampleModal">Add</button>
+    <tr>  
+      <th scope="col">Action</th>
+      <th scope="col">Type</th>
+      <th scope="col">Title</th>
+      <th scope="col">Description</th>
+      <th scope="col">Image</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach(App\Models\News_Event::get() as $indexKey =>$item)
+    <tr>
+      <td></td>
+      <td>{{$item->type}}</td>
+      <td>{{$item->title}}</td>
+      <td style="overflow-y: scroll;">{!!$item->description!!}</td>
+      @if($item->image)
+      <td><img class="img-circle" style="width:50px;height:50px;" src="{{asset('image/news/' . $item->image) }}" alt="Standard Post with Image"></td>
+      @endif
+    </tr>
+    @endforeach
+   
+  </tbody>
+</table>
+
+            </div>        
         </div>
     </div>
+   
     <div class="card-body text-center">
         <div id="tableview"></div>
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -152,18 +184,10 @@
                                                     processData: false,
                                                     contentType: false,
                                                     success: function (data) {
-                                                      console.log(true);
+                                                      console.log(data.image);
                                                       var op='';
                                                       $('#exampleModal').modal('hide');
-                                                      op+='<table class="table table-striped">';
-        op+='<tr><th>SN</th><th>Type</th><th>Title</th><th>Description</th><th>Image</th></tr>';
-        for(var i=0;i<data.length;i++){
-          op+='<tr>';
-          op+='<td>'+(i+1)+'</td><td>'+data[i].type+'</td><td>'+data[i].title+'</td><td>'+data[i].description+'</td><td>'+data[i].image+'</td></tr>';
-        }
-         op+='</table>';
-         $('#tableview').html(op);
-                                                         },
+                                                    $('#table tbody').prepend('<tr><td></td><td>'+data.type+'</td><td>'+data.title+'</td><td>'+data.description+'</td><td><img src="'+'image/news/'+data.image+'"></td></tr>')                                                         },
                                                     error:function(data){
                                                         var errors = data.responseJSON;
                                                         console.log(errors);

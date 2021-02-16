@@ -140,19 +140,21 @@
 					<div class="container clearfix">
 						<div class="onec-50">						
 								<div class="news-holder br-radius2">
+									@foreach(App\Models\News_Event::latest()->limit(1)->get() as $item)
 									<div class="entry clearfix" style="padding:80px;">
 										<div class="entry-title" >
-											<h3><a href="#">Abbahawa Trading (One Water) donated one million birr </a></h3>
+											<h3><a href="{{route ('news_detail',[$item->id])}}">{{$item->title}} </a></h3>
 										</div>
 										<ul class="entry-meta clearfix">
-											<li style="color: white;">News -</li>
-											<li style="color: white;">10th Feb 2014</li>
+											<li style="color: white;">{{$item->type}} -</li>
+											<li style="color: white;">{{$item->created_at->format('d M  Y')}}</li>
 										</ul>
 										<div class="entry-content">
-											<h1>Abbahawa Trading (One Water) donated one million birr at federal level and again continuing he’s donation to Sebeta city administration 100 	</h1>
+											<h1>{!!$item->description!!}</h1>
 										</div>
-										<a style=" margin-top: 10px; margin-left: 0px;" href="newsdetail.html"class="button btn-txt round">read more</a>
+										<a style=" margin-top: 10px; margin-left: 0px;" href="{{route ('news_detail',[$item->id])}}"class="button btn-txt round">read more</a>
 									</div>
+									@endforeach
 								</div>
 							</div>
 						
@@ -170,9 +172,9 @@
 						<div class="container clearfix">
 							<ul id="portfolio-filter" class="clearfix">
 
-									<a href="#"class="button2 btn-txt2 round2">News</a>
+									<a href="" id='news'class="button2 btn-txt2 round2">News</a>
 									
-									<a href="#"class="button2 btn-txt2 round2">Events</a>
+									<a href="" id='event'class="button2 btn-txt2 round2">Events</a>
 							</ul>
 
 						</div>
@@ -183,54 +185,70 @@
 					<div class="container clearfix">
 						
 						<div id="posts" class="post-grid grid-3 clearfix">
-							<div class="entry clearfix">
+							<div id="postss">
+							@foreach($data as $item)
+							<div id="post" class="entry clearfix">
 								<div class="entry-image br-radius3">
 									<img src="images/news2.jpg" />
 
 								</div>
 								<div class="entry-title">
-									<h2><a href="blog-single.html">Abbahawa Trading (One Water) donated one million birr </a></h2>
+									<h2><a href="{{route ('news_detail',[$item->id])}}">{{$item->title}} </a></h2>
 								</div>
 								<ul class="entry-meta clearfix">
-									<li>News -</li>
-									<li>10th Feb 2014</li>
+									<li>{{$item->type}} -</li>
+									<li>{{$item->created_at->format('d M  Y')}}</li>
 								</ul>
 								<div class="entry-content">
-									<h1>Abbahawa Trading (One Water) donated one million birr at federal level and again continuing he’s donation to Sebeta city administration 100 blanket, 100 sponge foam and two 3000 litter tankers to protect the killer</h1>
+									<h1>{!!$item->description!!}</h1>
 								</div>
 							</div>
-							<div class="entry clearfix">
-								<div class="entry-image br-radius2">
-									<img src="images/news3.jpg" />
-								</div>
-								<div class="entry-title">
-									<h2><a href="blog-single.html">Abbahawa Trading (One Water) donated one million birr </a></h2>
-								</div>
-								<ul class="entry-meta clearfix">
-									<li>News -</li>
-									<li>10th Feb 2014</li>
-								</ul>
-								<div class="entry-content">
-									<h1>Abbahawa Trading (One Water) donated one million birr at federal level and again continuing he’s donation to Sebeta city administration 100 blanket, 100 sponge foam and two 3000 litter tankers to protect the killer</h1>
-								</div>
-							</div>
-							<div class="entry clearfix">
-								<div class="entry-image br-radius3">
-									<img src="images/news land.jpg" />
-
-								</div>
-								<div class="entry-title">
-									<h2><a href="blog-single.html">Abbahawa Trading (One Water) donated one million birr </a></h2>
-								</div>
-								<ul class="entry-meta clearfix">
-									<li>News -</li>
-									<li>10th Feb 2014</li>
-								</ul>
-								<div class="entry-content">
-									<h1>Abbahawa Trading (One Water) donated one million birr at federal level and again continuing he’s donation to Sebeta city administration 100 blanket, 100 sponge foam and two 3000 litter tankers to protect the killer</h1>
-								</div>
-							</div>
+							@endforeach
 						</div>
+							
+						</div>
+						<script>
+							    $.ajaxSetup({
+                     headers: {
+                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                     }
+                     });
+					 $("#news").click(function(e) {
+						 console.log(true);
+						 e.preventDefault();
+						 $.ajax({
+							 type:'get',
+							 url:'{{ route('filter_news') }}',
+							 processData: false,
+							 contentType: false,
+							 dataType:'html',
+							 success: function (data) {
+								 $('#posts').html(data)
+								},
+								error:function(data){
+								
+								},
+							});
+						});
+						$("#event").click(function(e) { 
+							e.preventDefault();
+							$.ajax({
+								type:'get',
+								url:'{{ route('filter_event') }}',
+                                                   processData: false,
+                                                   contentType: false,
+												   dataType:'html',
+                                                   success: function (data) {
+													   $('#posts').html(data)
+                                                        },
+                                                   error:function(data){
+                                                    
+                                                    
+                                                   },
+                                                       });
+													  
+													});
+						</script>
 						<ul class="pagination nobottommargin">
 							<li class="disabled"><a href="#">&laquo;</a></li>
 							<li class="active"><a href="#">1</a></li>

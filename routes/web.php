@@ -44,6 +44,9 @@ Route::get('News_Events/list','App\Http\Controllers\News_Event@news_list')->midd
 Route::get('/','App\Http\Controllers\News_Event@index')->name('index');
 Route::get('/about','App\Http\Controllers\News_Event@about')->name('about');
 Route::get('/news','App\Http\Controllers\News_Event@news')->name('news');
-Route::get('/news/detail','App\Http\Controllers\News_Event@news_detail')->name('news_detail');
+Route::get('/news/{id}','App\Http\Controllers\News_Event@news_detail')->name('news_detail');
 Route::get('/product','App\Http\Controllers\News_Event@product')->name('product');
 Route::post('Add/Subscribers','App\Http\Controllers\News_Event@subscriber_store_post')->name('post_subscriber');
+
+Route::get('/filter_news','App\Http\Controllers\News_Event@filter_news')->name('filter_news');
+Route::get('/filter_event','App\Http\Controllers\News_Event@filter_event')->name('filter_event');

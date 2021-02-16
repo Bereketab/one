@@ -135,21 +135,23 @@
 			<div class="content-wrap">
 				<section style="margin-top: 15%;">
 					<div class="container clearfix">
-						<div class="col_full">						
+						<div class="col_full">	
+							@foreach(App\Models\News_Event::latest()->limit(1)->get() as $item)		
 								<div class="news-holderd br-radius2">
 									<div class="entry clearfix" style="padding:80px;">
 										<div class="entry-title" >
-											<h3><a href="#">Abbahawa Trading (One Water) donated one million birr </a></h3>
+											<h3><a href="{{route ('news_detail',[$item->id])}}">{{$item->title}} </a></h3>
 										</div>
 										<ul class="entry-meta clearfix">
-											<li style="color: white;">News -</li>
-											<li style="color: white;">10th Feb 2014</li>
+											<li style="color: white;">{{$item->type}} -</li>
+											<li style="color: white;">{{$item->created_at->format('d M  Y')}}</li>
 										</ul>
 										<div class="entry-content">
-											<h1>Abbahawa Trading PLC (One Water) planned to construct Koche primary school located at Sebeta with the estimated cost of 5 million birr and the owner of the company representative said that the construction will be finalized within short time. The owners believe that social responsibility is not extra cost it is investment that is why we are supporting our family.</h1>
+											<h1>	{!!$item->description!!}</h1>
 										</div>
 									</div>
 								</div>
+								@endforeach
 							</div>
 						
 					
@@ -173,32 +175,20 @@
 					<div class="container clearfix">
 						<h1 class="para-text" style="color: black; text-align: right;     margin-right: 2%; margin-top: 0%;">related news</h1>
 						<div id="posts" class="post-grid grid-3 clearfix">
+							@foreach(App\Models\News_Event::latest()->limit(1)->get() as $item)
 							<div class="entry clearfix">
 								<div class="entry-image br-radius3">
-									<img src="images/micheile-henderson-ZVprbBmT-1@2x.png" />
+									@if($item->image)
+									<img class="image_fade" src="{{asset('image/news/' . $item->image) }}" alt="Standard Post with Image">
+									@endif
 
 								</div>
 								<div class="entry-title">
-									<h2><a href="blog-single.html">Abbahawa Trading (One Water) donated one million birr </a></h2>
+									<h2><a href="{{route ('news_detail',[$item->id])}}">{{$item->title}} </a></h2>
 								</div>
 							</div>
-							<div class="entry clearfix">
-								<div class="entry-image br-radius2">
-									<img src="images/micheile-henderson-ZVprbBmT-1@2x.png" />
-								</div>
-								<div class="entry-title">
-									<h2><a href="blog-single.html">Abbahawa Trading (One Water) donated one million birr </a></h2>
-								</div>
-							</div>
-							<div class="entry clearfix">
-								<div class="entry-image br-radius3">
-									<img src="images/micheile-henderson-ZVprbBmT-1@2x.png" />
-
-								</div>
-								<div class="entry-title">
-									<h2><a href="blog-single.html">Abbahawa Trading (One Water) donated one million birr </a></h2>
-								</div>
-							</div>
+							@endforeach
+							
 						</div>
 						
 

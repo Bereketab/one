@@ -59,12 +59,14 @@ class News_Event extends Controller
     }
     public function news()
     {
-        return view('pages.news');
+        $data = a::latest()->limit(10)->get();
+        return view('pages.news',['data'=>$data]);
         
     }
-    public function news_detail()
+    public function news_detail($id)
     {
-        return view('pages.news_detail');
+        $data = a::find($id);
+        return view('pages.news_detail', ['data' => $data]);
         
     }
     public function product()
@@ -102,5 +104,18 @@ class News_Event extends Controller
         
     
     } 
+    public function filter_news()
+    {
+        $data = a::where('type','news')->get();
+        return view('pages.news_filter', ['data' => $data]);
+        
+    }
+    public function filter_event()
+    {
+        $data = a::where('type','Event')->get();
+        return view('pages.news_filter', ['data' => $data]);
+        
+    }
+
     
 }
