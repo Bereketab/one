@@ -26,30 +26,7 @@
 
 <body>
     <div class="wrapper">
-       
-        <script>
-            $("#manage").click(function(e) {
-                       e.preventDefault();
 
-                       $.ajax({
-                                                  type:'get',
-                                                  url:'{{ route('news_list') }}',
-                                                  processData: false,
-                                                  contentType: false,
-                                                  dataType:'json',
-                                                  success: function (data) {
-                                                    var popup = '<div class="modal fade" id="notes-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;"><div class="modal-dialog"><div class="notes-modal-container"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h1></h1><h3>Recipe Flavours</h3><br>' + data + '</div></div></div>';
-                                                      $('#replace').html('popup')
-                                                      
-                                                 console.log(data);
-                                                       },
-                                                  error:function(data){
-                                                   
-                                                   
-                                                  },
-                                                      });
-                                                   });
-       </script>
         <div id="body" class="active">
             <nav class="navbar navbar-expand-lg navbar-white bg-white">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -70,12 +47,12 @@
                     </ul>
                 </div>
             </nav>
-            <div id='replace'>
-                <table id="table" class="table">
-                
+            <a class='btn btn-primary' href="" data-toggle="modal" data-target="#exampleModal">Add</a>
 
+                <table id="table" class="table">
+            
   <thead class="thead-dark">
-    <button class='btn btn-app' href="" data-toggle="modal" data-target="#exampleModal">Add</button>
+   
     <tr>  
       <th scope="col">Action</th>
       <th scope="col">Type</th>
@@ -87,10 +64,11 @@
   <tbody>
     @foreach(App\Models\News_Event::get() as $indexKey =>$item)
     <tr>
-      <td></td>
+      <td>     <a href="" onclick="return confirm('Are You Sure {{$item->name}}?')"  class="fa fa-remove" title="Remove this item"><i class="fa fa-trash"></i></a>
+        <a href="" class="remove" title="Remove this item"><i class="fa fa-edit"></i></a></td>
       <td>{{$item->type}}</td>
       <td>{{$item->title}}</td>
-      <td style="overflow-y: scroll;">{!!$item->description!!}</td>
+      <td style="overflow-y: scroll;"><p>{!!$item->description!!}</p></td>
       @if($item->image)
       <td><img class="img-circle" style="width:50px;height:50px;" src="{{asset('image/news/' . $item->image) }}" alt="Standard Post with Image"></td>
       @endif
@@ -100,12 +78,10 @@
   </tbody>
 </table>
 
-            </div>        
         </div>
     </div>
    
-    <div class="card-body text-center">
-        <div id="tableview"></div>
+    
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -148,7 +124,48 @@
                 </div>
             </div>
         </div>
-    </div>
+        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Modal</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-left">
+                        <form accept-charset="utf-8" id="template-jobform2">
+                            @csrf
+                            <div class="form-group">
+                                <label for="email">Type</label>
+                                <select class="form-control" id="" name='type'>
+                                    <option value="News">News</option>
+                                    <option value="Event">Event</option>
+                                  </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="text">Title</label>
+                                <input type="text" name="title" placeholder="Title" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="text">Image</label>
+                                <input type="file" name="image" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="text">Description</label>
+                                <textarea type="text" name="description" placeholder="Description" class="form-control ckeditor"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     <script src="{{asset('assets/vendor/jquery/jquery.min.js')}}"></script>
     <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{asset('assets/js/script.js')}}"></script>
@@ -176,18 +193,17 @@
                                                 fd.append('type',type);
                                                 fd.append('description',desc);
                                                 fd.append('image',image);
-                                                console.log(description)
+                                                console.log(image.name)
                                                 $.ajax({
                                                     type:'POST',
                                                     url:'{{ route ('news_post')}}',
                                                     data: fd,
                                                     processData: false,
                                                     contentType: false,
-                                                    success: function (data) {
-                                                      console.log(data.image);
-                                                      var op='';
+                                                    success: function (data,imagename) {
+                                                      console.log(imagename);
                                                       $('#exampleModal').modal('hide');
-                                                    $('#table tbody').prepend('<tr><td></td><td>'+data.type+'</td><td>'+data.title+'</td><td>'+data.description+'</td><td><img src="'+'image/news/'+data.image+'"></td></tr>')                                                         },
+                                                    $('#table tbody').prepend('<tr><td></td><td>'+data.type+'</td><td>'+data.title+'</td><td>'+data.description+'</td><td><img src="image/news/'+image.name+'" style="width:50px;height:50px;"/></td></tr>')                                                         },
                                                     error:function(data){
                                                         var errors = data.responseJSON;
                                                         console.log(errors);

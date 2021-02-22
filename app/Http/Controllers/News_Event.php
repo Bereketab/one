@@ -20,30 +20,28 @@ class News_Event extends Controller
     public function news_post(Request $request)
     {
         $data=$request->validate([
+            'id'=>'nullable',
             'type' => 'required',
-            'image' => 'nullable|image',
+            'image' => 'required|image',
             'description' => 'required',
             'title' => 'required',
         ]);  
-        $news_object = new a;
-        $news_object -> type =  $request->get('type');
-        $news_object -> image = $request->get('image');
-        $news_object -> description = $request->get('description');
-        $news_object -> title =  $request->get('title');
         if($request->hasFile('image')){
             $imagename = $request->image->getClientOriginalName();
             $location = public_path('image/news');
             $request ->image->move($location,$imagename);
-            $news_object->image = $imagename;
         }
-        $news_object->save();
-        return   Response::json($data);
+        $data2=a::updateOrCreate(['id' => $request->id],
+                    ['title' => $request->title, 'description' => $request->description, 'type' => $request->type, 'image' => $imagename]);
+                    return Response::json($data2);
+        
+    
         
     }
     public function news_list()
     {
         $data = a::get();
-        return Response::json($data);
+        return Response::json($data,$imagename);
         
     }
     public function index()
@@ -115,6 +113,20 @@ class News_Event extends Controller
         $data = a::where('type','Event')->get();
         return view('pages.news_filter', ['data' => $data]);
         
+    }
+   
+    public function edit(Request $request)
+    {   
+        $where = array('id' => $request->id);
+        $data  = a::where($where)->first();
+      
+        return Response()->json($data);
+    }
+    public function destroy(Request $request)
+    {
+        $data = a::where('id',$request->id)->delete();
+      
+        return Response()->json($data);
     }
 
     

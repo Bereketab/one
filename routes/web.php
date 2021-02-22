@@ -34,9 +34,9 @@ Route::get('logout', 'App\Http\Controllers\Auth\LoginController@logout', functio
 Route::get('Add/News_Events','App\Http\Controllers\News_Event@news_get')->middleware('auth')->name('news_get');
 Route::post('Add/News_Events','App\Http\Controllers\News_Event@news_post')->name('news_post');
 Route::get('News_Events/list','App\Http\Controllers\News_Event@news_list')->middleware('auth')->name('news_list');
-// Route::get('Air-rental/{id}',['as' => 'air_rental_edit', 'uses' => 'App\Http\Controllers\News_Event@edit'])->middleware('auth');
+Route::post('News_Events/edit',['as' => 'edit', 'uses' => 'App\Http\Controllers\News_Event@edit'])->middleware('auth');
 // Route::post('Air-rental','App\Http\Controllers\News_Event@update')->name('air_rental_update');
-// Route::get('Delete-Air-rental/{id}','App\Http\Controllers\News_Event@air_rental_delete')->name('air_rental_delete')->middleware('auth');
+Route::post('News_Events/delete','App\Http\Controllers\News_Event@destroy')->name('destroy')->middleware('auth');
 // Route::get('Air/{id}','App\Http\Controllers\News_Event@air_detail')->name('air_detail');
 
 
